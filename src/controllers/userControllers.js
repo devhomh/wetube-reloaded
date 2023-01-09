@@ -138,8 +138,9 @@ export const logout = (req, res) => {
 };
 
 export const edit = async (req, res) => {
+  const pageTitle = "Edit Profile";
   if (req.method === "GET") {
-    return res.render("edit-profile", { pageTitle: "Edit Profile" });
+    return res.render("edit-profile", { pageTitle });
   }
   if (req.method === "POST") {
     const {
@@ -148,6 +149,17 @@ export const edit = async (req, res) => {
       },
       body: { name, email, username, location },
     } = req;
+    const existEmail = await User.findOne({ email });
+    const existUsername = await User.findOne({ username });
+    if (
+      (existEmail !== null && existEmail._id != _id) ||
+      (existUsername !== null && existUsername._id != _id)
+    ) {
+      return res.status(400).render("edit-profile", {
+        pageTitle,
+        errorMessage: "This email/username already exists.",
+      });
+    }
     const updatedUser = await User.findByIdAndUpdate(
       _id,
       {
