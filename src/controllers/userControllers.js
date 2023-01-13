@@ -1,19 +1,20 @@
 import User from "../models/User";
 import bcrypt from "bcrypt";
 
-export const getJoin = (req, res) => res.render("join", { pageTitle: "Join" });
+export const getJoin = (req, res) =>
+  res.render("users/join", { pageTitle: "Join" });
 export const postJoin = async (req, res) => {
   const { name, username, email, password, password2, location } = req.body;
   const pageTitle = "join";
   if (password !== password2) {
-    return res.status(400).render("join", {
+    return res.status(400).render("users/join", {
       pageTitle,
       errorMessage: "Password confirmation does not match.",
     });
   }
   const exists = await User.exists({ $or: [{ username }, { email }] });
   if (exists) {
-    return res.status(400).render("join", {
+    return res.status(400).render("users/join", {
       pageTitle,
       errorMessage: "This username/email is already taken.",
     });
@@ -28,28 +29,28 @@ export const postJoin = async (req, res) => {
     });
     res.redirect("/login");
   } catch (error) {
-    return res.status(400).render("join", {
+    return res.status(400).render("users/join", {
       pageTitle: "Join",
       errorMessage: error._message,
     });
   }
 };
 export const getLogin = (req, res) =>
-  res.render("login", { pageTitle: "Login" });
+  res.render("users/login", { pageTitle: "Login" });
 
 export const postLogin = async (req, res) => {
   const { username, password } = req.body;
   const pageTitle = "Login";
   const user = await User.findOne({ username, socialOnly: false });
   if (!user) {
-    return res.status(400).render("login", {
+    return res.status(400).render("users/login", {
       pageTitle,
       errorMessage: "An account with this username does not exists.",
     });
   }
   const ok = await bcrypt.compare(password, user.password);
   if (!ok) {
-    return res.status(400).render("login", {
+    return res.status(400).render("users/login", {
       pageTitle,
       errorMessage: "Wrong password",
     });
@@ -145,9 +146,10 @@ export const edit = async (req, res) => {
   if (req.method === "POST") {
     const {
       session: {
-        user: { _id },
+        user: { _id, avatarUrl },
       },
       body: { name, email, username, location },
+      file,
     } = req;
     const existEmail = await User.findOne({ email });
     const existUsername = await User.findOne({ username });
@@ -155,7 +157,7 @@ export const edit = async (req, res) => {
       (existEmail !== null && existEmail._id != _id) ||
       (existUsername !== null && existUsername._id != _id)
     ) {
-      return res.status(400).render("edit-profile", {
+      return res.status(400).render("users/edit-profile", {
         pageTitle,
         errorMessage: "This email/username already exists.",
       });
@@ -163,6 +165,7 @@ export const edit = async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(
       _id,
       {
+        avatarUrl: file ? file.path : avatarUrl,
         name,
         email,
         username,

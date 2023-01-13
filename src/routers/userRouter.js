@@ -7,12 +7,20 @@ import {
   finishGithubLogin,
   changePassword,
 } from "../controllers/userControllers";
-import { protectorMiddleware, publicOnlyMiddleware } from "../middlewares";
+import {
+  protectorMiddleware,
+  publicOnlyMiddleware,
+  avatarUpload,
+} from "../middlewares";
 
 const userRouter = express.Router();
 
 userRouter.get("/logout", protectorMiddleware, logout);
-userRouter.route("/edit").all(protectorMiddleware).get(edit).post(edit);
+userRouter
+  .route("/edit")
+  .all(protectorMiddleware)
+  .get(edit)
+  .post(avatarUpload.single("avatar"), edit);
 userRouter
   .route("/change-password")
   .all(protectorMiddleware)
