@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 
 export const getJoin = (req, res) =>
   res.render("users/join", { pageTitle: "Join" });
+
 export const postJoin = async (req, res) => {
   const { name, username, email, password, password2, location } = req.body;
   const pageTitle = "join";
@@ -35,6 +36,7 @@ export const postJoin = async (req, res) => {
     });
   }
 };
+
 export const getLogin = (req, res) =>
   res.render("users/login", { pageTitle: "Login" });
 
@@ -222,4 +224,16 @@ export const changePassword = async (req, res) => {
   }
 };
 
-export const see = (req, res) => res.send("See");
+export const see = async (req, res) => {
+  const {
+    params: { id },
+  } = req;
+  const user = await User.findById(id).populate("videos");
+  if (!user) {
+    return res.status(404).render("404", { pageTitle: "User not found." });
+  }
+  return res.render("users/profile", {
+    pageTitle: `${user.name}의 Profile`,
+    user,
+  });
+};
