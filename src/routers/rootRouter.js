@@ -1,5 +1,4 @@
 import express from "express";
-import { removeAllListeners } from "nodemon";
 import {
   getJoin,
   postJoin,
