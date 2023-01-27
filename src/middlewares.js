@@ -13,21 +13,31 @@ const s3 = new S3Client({
 
 const s3ImageUploader = multerS3({
   s3: s3,
-  bucket: "wetubeee22ee/images",
+  bucket: "wetubeee22ee",
   Condition: {
     StringEquals: {
       "s3:x-amz-acl": ["public-read"],
     },
   },
+  key: function (request, file, ab_callback) {
+    const newFileName = Date.now() + "-" + file.originalname;
+    const fullPath = "images/" + newFileName;
+    ab_callback(null, fullPath);
+  },
 });
 
 const s3VideoUploader = multerS3({
   s3: s3,
-  bucket: "wetubeee22ee/videos",
+  bucket: "wetubeee22ee",
   Condition: {
     StringEquals: {
       "s3:x-amz-acl": ["public-read"],
     },
+  },
+  key: function (request, file, ab_callback) {
+    const newFileName = Date.now() + "-" + file.originalname;
+    const fullPath = "videos/" + newFileName;
+    ab_callback(null, fullPath);
   },
 });
 
