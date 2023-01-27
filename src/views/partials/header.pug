@@ -18,8 +18,8 @@ header
                         if loggedInUser.avatarUrl ===""
                             span 😀
                         else
-                            if loggedInUser.avatarUrl
-                                if loggedInUser.avartarUrl.toString().includes("github")
+                            if loggedInUser.avartarUrl
+                                if loggedInUser.avartarUrl.includes("github")
                                     img.header__avatar(src=loggedInUser.avatarUrl)
                                 else
                                     img.header__avatar(src="/" + loggedInUser.avatarUrl)
