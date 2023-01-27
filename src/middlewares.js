@@ -11,15 +11,27 @@ const s3 = new S3Client({
   },
 });
 
-const multerUploader = multerS3({
+const s3ImageUploader = multerS3({
   s3: s3,
-  bucket: "wetubeee22ee",
+  bucket: "wetubeee22ee/images",
   Condition: {
     StringEquals: {
       "s3:x-amz-acl": ["public-read"],
     },
   },
 });
+
+const s3VideoUploader = multerS3({
+  s3: s3,
+  bucket: "wetubeee22ee/videos",
+  Condition: {
+    StringEquals: {
+      "s3:x-amz-acl": ["public-read"],
+    },
+  },
+});
+
+const isHeroku = process.env.NODE_ENV === "production";
 
 export const localsMiddleware = (req, res, next) => {
   res.locals.loggedIn = Boolean(req.session.loggedIn);
@@ -51,7 +63,7 @@ export const avatarUpload = multer({
   limits: {
     fileSize: 3000000,
   },
-  storage: multerUploader,
+  storage: isHeroku ? s3ImageUploader : undefined,
 });
 
 export const videoUpload = multer({
@@ -59,5 +71,5 @@ export const videoUpload = multer({
   limits: {
     fileSize: 10000000,
   },
-  storage: multerUploader,
+  storage: isHeroku ? s3VideoUploader : undefined,
 });
