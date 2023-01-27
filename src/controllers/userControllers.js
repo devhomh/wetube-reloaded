@@ -154,7 +154,6 @@ export const edit = async (req, res) => {
       body: { name, email, username, location },
       file,
     } = req;
-    console.log(file);
     const existEmail = await User.findOne({ email });
     const existUsername = await User.findOne({ username });
     if (
@@ -169,7 +168,7 @@ export const edit = async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(
       _id,
       {
-        avatarUrl: file ? file.path : avatarUrl,
+        avatarUrl: file ? file.location : avatarUrl,
         name,
         email,
         username,
