@@ -137,7 +137,6 @@ export const finishGithubLogin = async (req, res) => {
 
 export const logout = (req, res) => {
   req.session.destroy();
-  req.flash("info", "Bye Bye");
   return res.redirect("/");
 };
 
@@ -278,7 +277,7 @@ export const finishKakaoLogin = async (req, res) => {
   ).json();
   if ("access_token" in tokenRequest) {
     const { access_token } = tokenRequest;
-    const apiUrl = "https://kapi.kakao.com/v1/user/me";
+    const apiUrl = "https://kapi.kakao.com/v2/user/me";
     const userData = await (
       await fetch(apiUrl, {
         headers: {
@@ -302,7 +301,7 @@ export const finishKakaoLogin = async (req, res) => {
         socialOnly: true,
         username: kakaoProfile.nickname,
         password: "",
-        name: kakaoAccount.name,
+        name: kakaoProfile.nickname,
       });
     }
     req.session.loggedIn = true;
