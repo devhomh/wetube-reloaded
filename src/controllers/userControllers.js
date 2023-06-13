@@ -164,11 +164,11 @@ export const edit = async (req, res) => {
         errorMessage: "This email/username already exists.",
       });
     }
-    const isHeroku = process.env.NODE_ENV === "production";
+    const isCloudtype = process.env.NODE_ENV === "production";
     const updatedUser = await User.findByIdAndUpdate(
       _id,
       {
-        avatarUrl: file ? (isHeroku ? file.location : file.path) : avatarUrl,
+        avatarUrl: file ? (isCloudtype ? file.location : file.path) : avatarUrl,
         name,
         email,
         username,
@@ -248,10 +248,14 @@ export const see = async (req, res) => {
 };
 
 export const startKakaoLogin = (req, res) => {
+  const isCloudtype = process.env.NODE_ENV === "production";
+  const redirect_uri = isCloudtype
+    ? "https://port-0-wetube-reloaded-koh2xlilqzhxj.sel4.cloudtype.app/"
+    : "http://localhost:4000/users/kakao/finish";
   const baseUrl = "https://kauth.kakao.com/oauth/authorize";
   const config = {
     client_id: process.env.KAKAO_KEY,
-    redirect_uri: "http://localhost:4000/users/kakao/finish",
+    redirect_uri,
     response_type: "code",
     scope: "profile_nickname,profile_image,account_email",
   };
@@ -261,11 +265,15 @@ export const startKakaoLogin = (req, res) => {
 };
 
 export const finishKakaoLogin = async (req, res) => {
+  const isCloudtype = process.env.NODE_ENV === "production";
+  const redirect_uri = isCloudtype
+    ? "https://port-0-wetube-reloaded-koh2xlilqzhxj.sel4.cloudtype.app/"
+    : "http://localhost:4000/users/kakao/finish";
   const baseUrl = "https://kauth.kakao.com/oauth/token";
   const config = {
     grant_type: "authorization_code",
     client_id: process.env.KAKAO_KEY,
-    redirect_uri: "http://localhost:4000/users/kakao/finish",
+    redirect_uri,
     code: req.query.code,
   };
   const params = new URLSearchParams(config).toString();
