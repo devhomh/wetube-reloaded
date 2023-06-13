@@ -250,7 +250,7 @@ export const see = async (req, res) => {
 export const startKakaoLogin = (req, res) => {
   const isCloudtype = process.env.NODE_ENV === "production";
   const redirect_uri = isCloudtype
-    ? "https://port-0-wetube-reloaded-koh2xlilqzhxj.sel4.cloudtype.app/"
+    ? "https://port-0-wetube-reloaded-koh2xlilqzhxj.sel4.cloudtype.app"
     : "http://localhost:4000/users/kakao/finish";
   const baseUrl = "https://kauth.kakao.com/oauth/authorize";
   const config = {
@@ -267,7 +267,7 @@ export const startKakaoLogin = (req, res) => {
 export const finishKakaoLogin = async (req, res) => {
   const isCloudtype = process.env.NODE_ENV === "production";
   const redirect_uri = isCloudtype
-    ? "https://port-0-wetube-reloaded-koh2xlilqzhxj.sel4.cloudtype.app/"
+    ? "https://port-0-wetube-reloaded-koh2xlilqzhxj.sel4.cloudtype.app"
     : "http://localhost:4000/users/kakao/finish";
   const baseUrl = "https://kauth.kakao.com/oauth/token";
   const config = {
